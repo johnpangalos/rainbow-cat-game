@@ -1,0 +1,8 @@
+-- Player
+local PLAYER_RADIUS = 10
+local PLAYER_SPEED = 250
+
+return {
+	PLAYER_RADIUS = PLAYER_RADIUS,
+	PLAYER_SPEED = PLAYER_SPEED,
+}
