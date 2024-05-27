@@ -37,7 +37,8 @@ end
 ---@class Player
 ---@return nil
 function Player:draw()
-	love.graphics.draw(self.img, self.x, self.y, 0, -1, 1, 0, self.width)
+	local xScale = self.facing == "left" and 1 or -1
+	love.graphics.draw(self.img, self.x, self.y, 0, xScale, 1, 0, self.width)
 end
 
 ---@class Player
@@ -46,7 +47,7 @@ end
 ---@return nil
 function Player:movement(dt, yGround)
 	local width = love.window.getMode()
-	local facing = self.facing
+
 	if self.x > 0 and (utils.isLeftDown()) then
 		self.x = self.x - dt * constants.PLAYER_SPEED
 		self.facing = "left"
@@ -55,12 +56,6 @@ function Player:movement(dt, yGround)
 	if self.x < width - self.width and (utils.isRightDown()) then
 		self.x = self.x + dt * constants.PLAYER_SPEED
 		self.facing = "right"
-	end
-
-	if self.facing ~= facing then
-		local xScale = self.facing == "left" and 1 or -1
-		print(xScale)
-		love.graphics.draw(self.img, self.x, self.y, 0, xScale, 1, 0, self.width)
 	end
 
 	if love.keyboard.isDown("space") and self.yVelocity == 0 then
