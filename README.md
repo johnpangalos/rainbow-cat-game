@@ -6,7 +6,7 @@
     - Meets unicorn a the end of the level
     - Naming comes later
 - Power
-    - Creates rainbow to go over things
+    - Creates rainbows to go over things
 - Enimies
     - They look like piranahs but without sharp teeth
     - More things as well
