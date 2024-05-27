@@ -1,8 +1,12 @@
 -- Player
 local PLAYER_RADIUS = 10
-local PLAYER_SPEED = 250
+local PLAYER_SPEED = 400
+
+-- Ground
+local GROUND_COLOR = { 1, 1, 1 }
 
 return {
 	PLAYER_RADIUS = PLAYER_RADIUS,
 	PLAYER_SPEED = PLAYER_SPEED,
+	GROUND_COLOR = GROUND_COLOR,
 }
