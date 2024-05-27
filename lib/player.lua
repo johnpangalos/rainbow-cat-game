@@ -38,7 +38,8 @@ end
 ---@return nil
 function Player:draw()
 	local xScale = self.facing == "left" and 1 or -1
-	love.graphics.draw(self.img, self.x, self.y, 0, xScale, 1, 0, self.width)
+	local xOffest = self.facing == "left" and 0 or self.width
+	love.graphics.draw(self.img, self.x, self.y, 0, xScale, 1, xOffest, self.width)
 end
 
 ---@class Player
