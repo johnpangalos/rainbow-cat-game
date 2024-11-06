@@ -10,7 +10,7 @@ end
 local function isLeftDown()
 	return love.keyboard.isDown("left") or love.keyboard.isDown("a")
 end
----
+
 ---@return boolean
 local function isRightDown()
 	return love.keyboard.isDown("right") or love.keyboard.isDown("d")

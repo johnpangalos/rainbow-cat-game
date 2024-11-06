@@ -1,8 +1,9 @@
 local love = require("love")
 local constants = require("constants")
-local utils = require("utils")
+local utils = require("utils.index")
 
 local PLAYER_IMAGE_PATH = "assets/rainbow-cat-32x32.png"
+local CAT_WALKING_PATH = "assets/cat-walking.png"
 
 ---@class Player
 ---@field x number
