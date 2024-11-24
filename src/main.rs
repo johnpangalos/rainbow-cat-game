@@ -1,6 +1,8 @@
+use crate::game::collision::*;
 use crate::game::ground::*;
 use crate::game::player::*;
 use bevy::{prelude::*, render::camera::ScalingMode, sprite::TextureAtlasLayout};
+use game::walls::spawn_wall;
 
 mod game;
 
@@ -22,6 +24,7 @@ fn main() {
                 apply_velocity,
                 animate_sprite,
                 follow_player,
+                check_player_wall_collision,
             ),
         )
         .run();
@@ -44,4 +47,5 @@ fn setup(
 
     spawn_ground(&mut commands, &asset_server);
     spawn_player(&mut commands, &asset_server, texture_atlas_layouts);
+    spawn_wall(&mut commands);
 }

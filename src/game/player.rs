@@ -1,3 +1,4 @@
+use crate::game::collision::*;
 use crate::game::constants::*;
 use crate::game::utils::*;
 use bevy::prelude::*;
@@ -58,6 +59,10 @@ pub fn player_movement(
 
         match keyboard {
             ref k if k.just_pressed(KeyCode::Space) => {
+                // Make sure player can only jump once
+                if !player.is_grounded {
+                    return;
+                };
                 velocity.0.y = player.jump_force;
             }
             _ => {}
@@ -119,7 +124,7 @@ pub fn spawn_player(
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     let texture = asset_server.load("cat-walking.png");
-    let layout = TextureAtlasLayout::from_grid(UVec2::splat(64), 4, 1, None, None);
+    let layout = TextureAtlasLayout::from_grid(UVec2::splat(PLAYER_SIZE), 4, 1, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     let animation_indices = AnimationIndices { first: 0, last: 3 };
 
@@ -128,6 +133,9 @@ pub fn spawn_player(
             texture,
             transform: Transform::from_xyz(0.0, GROUND_HEIGHT, 1.0),
             ..default()
+        },
+        Collider {
+            size: Vec2::splat(PLAYER_SIZE as f32),
         },
         TextureAtlas {
             layout: texture_atlas_layout,
