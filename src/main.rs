@@ -23,7 +23,6 @@ fn main() {
                 player_movement,
                 apply_velocity,
                 animate_sprite,
-                follow_player,
                 check_player_wall_collision,
             ),
         )

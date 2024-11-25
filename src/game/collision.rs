@@ -8,11 +8,12 @@ pub struct Collider {
 }
 
 pub fn check_player_wall_collision(
-    mut player_query: Query<(&mut Transform, &Collider), With<Player>>,
+    mut player_query: Query<(&mut Transform, &Collider, &mut Player), With<Player>>,
     wall_query: Query<(&Transform, &Collider), (With<Wall>, Without<Player>)>,
 ) {
-    let (mut player_transform, player_collider) = player_query.single_mut();
+    let (mut player_transform, player_collider, mut player) = player_query.single_mut();
 
+    player.is_touching_wall = false;
     for (wall_transform, wall_collider) in wall_query.iter() {
         let collision = check_collision(
             player_transform.translation.truncate(),
@@ -22,16 +23,20 @@ pub fn check_player_wall_collision(
         );
 
         if collision {
+            player.is_touching_wall = true;
+
             let player_center = player_transform.translation.truncate();
             let wall_center = wall_transform.translation.truncate();
+
+            let x_overlap = (player_collider.size.x + wall_collider.size.x) * 0.5
+                - (player_center.x - wall_center.x).abs();
             if player_center.x > wall_center.x {
-                player_transform.translation.x = wall_transform.translation.x
-                    + (wall_collider.size.x + player_collider.size.x) * 0.5;
+                player_transform.translation.x += x_overlap
             } else {
-                player_transform.translation.x = wall_transform.translation.x
-                    - (wall_collider.size.x + player_collider.size.x) * 0.5;
+                player_transform.translation.x -= x_overlap;
             }
         }
+        println!("player is touching wall: {:?}", player.is_touching_wall);
     }
 }
 

@@ -17,23 +17,7 @@ pub struct Player {
     pub speed: f32,
     pub jump_force: f32,
     pub is_grounded: bool,
-}
-
-pub fn follow_player(
-    mut camera_query: Query<&mut Transform, (With<Camera>, Without<Player>)>,
-    player_query: Query<&Transform, With<Player>>,
-) {
-    let player_transform = player_query.single();
-    let mut camera_transform = camera_query.single_mut();
-
-    let min_x = -1.0;
-    let max_x = 1.0;
-
-    if player_transform.translation.x < min_x {
-        camera_transform.translation.x = player_transform.translation.x;
-    } else if player_transform.translation.x > max_x {
-        camera_transform.translation.x = player_transform.translation.x;
-    }
+    pub is_touching_wall: bool,
 }
 
 pub fn player_movement(
@@ -60,7 +44,7 @@ pub fn player_movement(
         match keyboard {
             ref k if k.just_pressed(KeyCode::Space) => {
                 // Make sure player can only jump once
-                if !player.is_grounded {
+                if !player.is_grounded && !player.is_touching_wall {
                     return;
                 };
                 velocity.0.y = player.jump_force;
@@ -147,6 +131,7 @@ pub fn spawn_player(
             speed: PLAYER_SPEED,
             jump_force: JUMP_FORCE,
             is_grounded: true,
+            is_touching_wall: false,
         },
         Velocity(Vec2::ZERO),
     ));
