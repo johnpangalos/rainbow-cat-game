@@ -36,7 +36,6 @@ pub fn check_player_wall_collision(
                 player_transform.translation.x -= x_overlap;
             }
         }
-        println!("player is touching wall: {:?}", player.is_touching_wall);
     }
 }
 

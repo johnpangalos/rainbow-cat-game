@@ -31,11 +31,11 @@ pub fn player_movement(
         match keyboard {
             ref k if k.pressed(KeyCode::KeyA) || k.pressed(KeyCode::ArrowLeft) => {
                 direction.x -= 1.0;
-                transform.scale.x = 1.0_f32.abs();
+                transform.scale.x = 0.5;
             }
             ref k if k.pressed(KeyCode::KeyD) || k.pressed(KeyCode::ArrowRight) => {
                 direction.x += 1.0;
-                transform.scale.x = -1.0_f32.abs();
+                transform.scale.x = -0.5;
             }
             _ => {}
         }
@@ -60,11 +60,9 @@ pub fn apply_velocity(mut query: Query<(&mut Transform, &Velocity, &mut Player)>
         transform.translation.x += velocity.0.x * time.delta_seconds();
         transform.translation.y += velocity.0.y * time.delta_seconds();
 
-        let ground_height = GROUND_HEIGHT;
-
         match transform.translation.y {
-            y if y < ground_height => {
-                transform.translation.y = ground_height;
+            y if y < GROUND_HEIGHT - PLAYER_SIZE as f32 * 0.5 => {
+                transform.translation.y = GROUND_HEIGHT - PLAYER_SIZE as f32 * 0.5;
                 player.is_grounded = true
             }
             _ => {
@@ -108,18 +106,18 @@ pub fn spawn_player(
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     let texture = asset_server.load("cat-walking.png");
-    let layout = TextureAtlasLayout::from_grid(UVec2::splat(PLAYER_SIZE), 4, 1, None, None);
+    let layout = TextureAtlasLayout::from_grid(UVec2::splat(FULL_PLAYER_SIZE), 4, 1, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     let animation_indices = AnimationIndices { first: 0, last: 3 };
 
     commands.spawn((
         SpriteBundle {
             texture,
-            transform: Transform::from_xyz(0.0, GROUND_HEIGHT, 1.0),
+            transform: Transform::from_xyz(0.0, 332.0, 1.0).with_scale(Vec3::new(-0.5, 0.5, 1.0)),
             ..default()
         },
         Collider {
-            size: Vec2::splat(PLAYER_SIZE as f32),
+            size: Vec2::splat(FULL_PLAYER_SIZE as f32 * 0.5),
         },
         TextureAtlas {
             layout: texture_atlas_layout,
