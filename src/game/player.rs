@@ -31,11 +31,11 @@ pub fn player_movement(
         match keyboard {
             ref k if k.pressed(KeyCode::KeyA) || k.pressed(KeyCode::ArrowLeft) => {
                 direction.x -= 1.0;
-                transform.scale.x = 0.5;
+                transform.scale.x = 1.0;
             }
             ref k if k.pressed(KeyCode::KeyD) || k.pressed(KeyCode::ArrowRight) => {
                 direction.x += 1.0;
-                transform.scale.x = -0.5;
+                transform.scale.x = -1.0;
             }
             _ => {}
         }
@@ -61,8 +61,8 @@ pub fn apply_velocity(mut query: Query<(&mut Transform, &Velocity, &mut Player)>
         transform.translation.y += velocity.0.y * time.delta_seconds();
 
         match transform.translation.y {
-            y if y < GROUND_HEIGHT - PLAYER_SIZE as f32 * 0.5 => {
-                transform.translation.y = GROUND_HEIGHT - PLAYER_SIZE as f32 * 0.5;
+            y if y < GROUND_HEIGHT - PLAYER_HEIGHT as f32 * 0.5 => {
+                transform.translation.y = GROUND_HEIGHT - PLAYER_HEIGHT as f32 * 0.5;
                 player.is_grounded = true
             }
             _ => {
@@ -106,25 +106,26 @@ pub fn spawn_player(
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     let texture = asset_server.load("cat-walking.png");
-    let layout = TextureAtlasLayout::from_grid(UVec2::splat(FULL_PLAYER_SIZE), 4, 1, None, None);
+    let layout =
+        TextureAtlasLayout::from_grid(UVec2::new(PLAYER_WIDTH, PLAYER_HEIGHT), 6, 1, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
-    let animation_indices = AnimationIndices { first: 0, last: 3 };
+    let animation_indices = AnimationIndices { first: 0, last: 5 };
 
     commands.spawn((
         SpriteBundle {
             texture,
-            transform: Transform::from_xyz(0.0, 332.0, 1.0).with_scale(Vec3::new(-0.5, 0.5, 1.0)),
+            transform: Transform::from_xyz(0.0, 332.0, 1.0),
             ..default()
         },
         Collider {
-            size: Vec2::splat(FULL_PLAYER_SIZE as f32 * 0.5),
+            size: Vec2::new(PLAYER_WIDTH as f32, PLAYER_HEIGHT as f32),
         },
         TextureAtlas {
             layout: texture_atlas_layout,
             index: animation_indices.first,
         },
         animation_indices,
-        AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+        AnimationTimer(Timer::from_seconds(0.075, TimerMode::Repeating)),
         Player {
             speed: PLAYER_SPEED,
             jump_force: JUMP_FORCE,

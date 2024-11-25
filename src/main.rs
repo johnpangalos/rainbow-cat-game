@@ -1,6 +1,7 @@
 use crate::game::collision::*;
 use crate::game::ground::*;
 use crate::game::player::*;
+use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::{prelude::*, render::camera::ScalingMode, sprite::TextureAtlasLayout};
 use game::walls::spawn_wall;
 
@@ -16,6 +17,8 @@ fn main() {
             }),
             ..default()
         }))
+        .add_plugins(FrameTimeDiagnosticsPlugin::default())
+        .add_plugins(LogDiagnosticsPlugin::default()) // This will print FPS to console
         .add_systems(Startup, setup)
         .add_systems(
             Update,
