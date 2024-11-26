@@ -7,6 +7,14 @@ use game::walls::spawn_wall;
 
 mod game;
 
+#[derive(SystemSet, Debug, Hash, PartialEq, Eq, Clone)]
+enum MovementSet {
+    Input,
+    Physics,
+    Animation,
+    Collision,
+}
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
@@ -20,14 +28,22 @@ fn main() {
         .add_plugins(FrameTimeDiagnosticsPlugin::default())
         .add_plugins(LogDiagnosticsPlugin::default()) // This will print FPS to console
         .add_systems(Startup, setup)
-        .add_systems(
+        .configure_sets(
             Update,
             (
-                player_movement,
-                apply_velocity,
-                animate_sprite,
-                check_player_wall_collision,
-            ),
+                MovementSet::Input,
+                MovementSet::Physics,
+                MovementSet::Animation,
+                MovementSet::Collision,
+            )
+                .chain(),
+        )
+        .add_systems(Update, player_movement.in_set(MovementSet::Input))
+        .add_systems(Update, apply_velocity.in_set(MovementSet::Physics))
+        .add_systems(Update, animate_sprite.in_set(MovementSet::Animation))
+        .add_systems(
+            Update,
+            check_player_wall_collision.in_set(MovementSet::Collision),
         )
         .run();
 }
