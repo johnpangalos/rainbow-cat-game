@@ -38,12 +38,17 @@ fn main() {
             )
                 .chain(),
         )
-        .add_systems(Update, player_movement.in_set(MovementSet::Input))
-        .add_systems(Update, apply_velocity.in_set(MovementSet::Physics))
-        .add_systems(Update, animate_sprite.in_set(MovementSet::Animation))
         .add_systems(
             Update,
-            check_player_wall_collision.in_set(MovementSet::Collision),
+            (
+                player_movement.in_set(MovementSet::Input),
+                apply_velocity.in_set(MovementSet::Physics),
+                (
+                    animate_sprite.after(apply_velocity),
+                    check_player_wall_collision.after(apply_velocity),
+                )
+                    .in_set(MovementSet::Animation),
+            ),
         )
         .run();
 }
